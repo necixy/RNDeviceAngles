@@ -48,13 +48,16 @@ RCT_EXPORT_METHOD(startMotionUpdates) {
     {
         CMAttitude *attitude;
         attitude = devMotion.attitude;
-
+        
         float pitch =  (180/M_PI) * attitude.pitch;
         float roll = (180/M_PI) * attitude.roll;
         float yaw = (180/M_PI) * attitude.yaw;
-
+        float gravityZ = devMotion.gravity.z;
+        float pitchExtended = gravityZ > 0 ? 180 - pitch : pitch;
+        
         [self.bridge.eventDispatcher sendDeviceEventWithName:@"AnglesData" body:@{
                                                                                   @"pitch" : [NSNumber numberWithDouble:pitch],
+                                                                                  @"pitchExtended" : [NSNumber numberWithDouble:pitchExtended],
                                                                                   @"roll" : [NSNumber numberWithDouble:roll],
                                                                                   @"yaw" : [NSNumber numberWithDouble:yaw]
                                                                                   }];
